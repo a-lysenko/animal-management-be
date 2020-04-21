@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import express from 'express';
-import path from 'path';
 
 import * as routes from './routes'
 
@@ -15,13 +14,6 @@ const app = express();
 
 // Configure Express to parse incoming JSON data
 app.use( express.json() );
-
-// Configure Express to use EJS
-app.set( "views", path.join( __dirname, "views" ) );
-app.set( "view engine", "ejs" );
-
-// Configure Express to serve static files in the public folder
-app.use( express.static( path.join( __dirname, "public" ) ) );
 
 routes.register(app);
 

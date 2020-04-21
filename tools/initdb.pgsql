@@ -1,12 +1,10 @@
--- Drops guitars table
-DROP TABLE IF EXISTS guitars;
+-- Drops animals table
+DROP TABLE IF EXISTS animals;
 
--- Creates guitars table
-CREATE TABLE IF NOT EXISTS guitars (
+-- Creates animals table
+CREATE TABLE IF NOT EXISTS animals (
     id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY
-    , user_id varchar(50) NOT NULL
-    , brand varchar(50) NOT NULL
-    , model varchar(50) NOT NULL
-    , year smallint NULL
-    , color varchar(50) NULL
+    , birthday date
+    , species varchar(50)
+    , vaccinated boolean
 );

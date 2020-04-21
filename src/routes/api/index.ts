@@ -1,5 +1,6 @@
 import * as express from "express";
 import pgPromise from "pg-promise";
+import * as animalsAPI from './animals';
 
 export const register = ( app: express.Application ) => {
     const port = parseInt( process.env.PGPORT || "5432", 10 );
@@ -12,6 +13,8 @@ export const register = ( app: express.Application ) => {
 
     const pgp = pgPromise();
     const db = pgp( config );
+
+    animalsAPI.register(app, db);
 
     app.get( `/api/guitars/all`, async ( req: any, res ) => {
         try {
