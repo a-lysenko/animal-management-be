@@ -3,21 +3,19 @@ import pgPromise from "pg-promise";
 import pg from "pg-promise/typescript/pg-subset";
 
 export const register = ( app: express.Application, db: pgPromise.IDatabase<{},pg.IClient> ) => {
-  app.get( "/animals", ( req: any, res ) => {
-    res.redirect( "/api/animals/all" );
+  app.get( "/owners", ( req: any, res ) => {
+    res.redirect( "/api/owners/all" );
   } );
 
-  app.get( `/api/animals/all`, async ( req: any, res ) => {
+  app.get( `/api/owners/all`, async ( req: any, res ) => {
     try {
-      const animals = await db.any( `
+      const owners = await db.any( `
                 SELECT
                     id
-                    , birthday
-                    , species
-                    , vaccinated
-                FROM    animals
-                ORDER BY birthday`);
-      return res.json( animals );
+                    , fullname
+                FROM    owners
+                ORDER BY fullname`);
+      return res.json( owners );
     } catch ( err ) {
       // tslint:disable-next-line:no-console
       console.error(err);
@@ -25,18 +23,16 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
     }
   } );
 
-  app.get( `/api/animals/:id`, async ( req: any, res ) => {
+  app.get( `/api/owners/:id`, async ( req: any, res ) => {
     try {
-      const animals = await db.any( `
+      const owners = await db.any( `
                 SELECT
                     id
-                    , birthday
-                    , species
-                    , vaccinated
-                FROM    animals
-                WHERE   id = $[animalId]`,
-        { animalId: Number(req.params.id) } );
-      return res.json( animals );
+                    , fullname
+                FROM    owners
+                WHERE   id = $[ownerId]`,
+        { ownerId: Number(req.params.id) } );
+      return res.json( owners );
     } catch ( err ) {
       // tslint:disable-next-line:no-console
       console.error(err);
@@ -44,11 +40,11 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
     }
   } );
 
-  app.post( `/api/animals/add`, async ( req: any, res ) => {
+  app.post( `/api/owners/add`, async ( req: any, res ) => {
     try {
       const id = await db.one( `
-                INSERT INTO animals( birthday, species, vaccinated )
-                VALUES( $[birthday], $[species], $[vaccinated] )
+                INSERT INTO owners( fullname )
+                VALUES( $[fullname] )
                 RETURNING id;`,
         { ...req.body  } );
       return res.json( { id } );
@@ -59,13 +55,11 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
     }
   } );
 
-  app.put( `/api/animals/update`, async ( req: any, res ) => {
+  app.put( `/api/owners/update`, async ( req: any, res ) => {
     try {
       const id = await db.one( `
-                UPDATE animals
-                SET birthday = $[birthday]
-                    , species = $[species]
-                    , vaccinated = $[vaccinated]
+                UPDATE owners
+                SET fullname = $[fullname]
                 WHERE
                     id = $[id]
                 RETURNING
@@ -79,13 +73,13 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
     }
   } );
 
-  app.delete( `/api/animals/remove/:id`, async ( req: any, res ) => {
+  app.delete( `/api/owners/remove/:id`, async ( req: any, res ) => {
     try {
       const id = await db.result( `
                 DELETE
-                FROM    animals
-                WHERE   id = $[animalId]`,
-        { animalId: req.params.id  }, ( r ) => r.rowCount );
+                FROM    owners
+                WHERE   id = $[ownerId]`,
+        { ownerId: req.params.id  }, ( r ) => r.rowCount );
       return res.json( { id } );
     } catch ( err ) {
       // tslint:disable-next-line:no-console

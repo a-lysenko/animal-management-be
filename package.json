@@ -12,6 +12,8 @@
     "dev": "nodemon --watch src -e ts --exec npm run dev:start",
     "start": "node . --inspect=7000",
     "initdb": "ts-node tools/initdb",
+    "initdb:owners-addresses": "ts-node tools/initdb_owners_addresses",
+    "initdb:pets": "ts-node tools/initdb_pets",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "alias": {},
