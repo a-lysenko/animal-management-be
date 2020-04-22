@@ -1,10 +1,11 @@
-import * as express from "express";
-import pgPromise from "pg-promise";
-import pg from "pg-promise/typescript/pg-subset";
+import * as express from 'express';
+import pgPromise from 'pg-promise';
+import pg from 'pg-promise/typescript/pg-subset';
+import {SuccessSave} from './types';
 
 export const register = ( app: express.Application, db: pgPromise.IDatabase<{},pg.IClient> ) => {
-  app.get( "/animals", ( req: any, res ) => {
-    res.redirect( "/api/animals/all" );
+  app.get( '/animals', ( req: any, res ) => {
+    res.redirect( '/api/animals/all' );
   } );
 
   app.get( `/api/animals/all`, async ( req: any, res ) => {
@@ -51,7 +52,7 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
                 VALUES( $[birthday], $[species], $[vaccinated] )
                 RETURNING id;`,
         { ...req.body  } );
-      return res.json( { id } );
+      return res.json( id );
     } catch ( err ) {
       // tslint:disable-next-line:no-console
       console.error(err);
@@ -61,7 +62,7 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
 
   app.put( `/api/animals/update`, async ( req: any, res ) => {
     try {
-      const id = await db.one( `
+      const id = await db.one<SuccessSave>( `
                 UPDATE animals
                 SET birthday = $[birthday]
                     , species = $[species]
@@ -71,7 +72,7 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
                 RETURNING
                     id;`,
         { ...req.body  } );
-      return res.json( { id } );
+      return res.json( id );
     } catch ( err ) {
       // tslint:disable-next-line:no-console
       console.error(err);

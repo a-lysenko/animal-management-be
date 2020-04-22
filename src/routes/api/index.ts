@@ -1,6 +1,7 @@
 import * as express from "express";
 import pgPromise from "pg-promise";
 import * as animalsAPI from './animals';
+import * as wildAnimalsAPI from './wild-animals';
 import * as ownersAPI from './owners';
 
 export const register = ( app: express.Application ) => {
@@ -16,6 +17,7 @@ export const register = ( app: express.Application ) => {
     const db = pgp( config );
 
     animalsAPI.register(app, db);
+    wildAnimalsAPI.register(app, db);
     ownersAPI.register(app, db);
 
     app.get( `/api/guitars/find/:search`, async ( req: any, res ) => {
