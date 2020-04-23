@@ -51,7 +51,7 @@ export const register = (app: express.Application, db: pgPromise.IDatabase<{}, p
             ON p.owner_id = o.id
             WHERE   p.id = $[id]`,
         {id: Number(req.params.id)});
-      return res.json(pets);
+      return res.json(pets[0] || null);
     } catch (err) {
       // tslint:disable-next-line:no-console
       console.error(err);
