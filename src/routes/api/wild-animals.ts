@@ -45,7 +45,7 @@ export const register = (app: express.Application, db: pgPromise.IDatabase<{}, p
                 ON wa.animal_id = a.id
                 WHERE   wa.id = $[id]`,
         {id: Number(req.params.id)});
-      return res.json(wildAnimals);
+      return res.json(wildAnimals[0] || null);
     } catch (err) {
       // tslint:disable-next-line:no-console
       console.error(err);

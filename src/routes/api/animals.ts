@@ -12,11 +12,17 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
     try {
       const animals = await db.any( `
                 SELECT
-                    id
-                    , birthday
-                    , species
-                    , vaccinated
-                FROM    animals
+                    a.id
+                    , a.birthday
+                    , a.species
+                    , a.vaccinated
+                    , NOT p.id ISNULL ispet
+                    , NOT w.id ISNULL iswild
+                FROM    animals a
+                LEFT JOIN pets p
+                ON p.animal_id = a.id
+                LEFT JOIN wild_animals w
+                ON w.animal_id = a.id
                 ORDER BY birthday`);
       return res.json( animals );
     } catch ( err ) {
@@ -28,7 +34,7 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
 
   app.get( `/api/animals/:id`, async ( req: any, res ) => {
     try {
-      const animals = await db.any( `
+      const animal = await db.any( `
                 SELECT
                     id
                     , birthday
@@ -37,7 +43,7 @@ export const register = ( app: express.Application, db: pgPromise.IDatabase<{},p
                 FROM    animals
                 WHERE   id = $[animalId]`,
         { animalId: Number(req.params.id) } );
-      return res.json( animals );
+      return res.json( animal[0] || null );
     } catch ( err ) {
       // tslint:disable-next-line:no-console
       console.error(err);

@@ -34,19 +34,19 @@ export const register = (app: express.Application, db: pgPromise.IDatabase<{}, p
     try {
       const owners = await db.any(`
                 SELECT
-                    id
-                    , fullname
+                    o.id
+                    , o.fullname
                     , a.id addressesid
-                    , city
-                    , country
-                    , street
-                    , zipcode
+                    , a.city
+                    , a.country
+                    , a.street
+                    , a.zipcode
                 FROM    owners o
                 LEFT JOIN addresses a
-                ON o.id = addresses.owner_id
-                WHERE   id = $[ownerId]`,
+                ON o.id = a.owner_id
+                WHERE   o.id = $[ownerId]`,
         {ownerId: Number(req.params.id)});
-      return res.json(owners);
+      return res.json(owners[0] || null);
     } catch (err) {
       // tslint:disable-next-line:no-console
       console.error(err);
